@@ -17,6 +17,12 @@ export const Time = styled.Text`
   color: #e8e4e1;
 `;
 
+export const PlayButton = styled.TouchableOpacity``;
+
+export const TimeOfCicle = styled.TouchableOpacity``;
+
+export const TimeOfInteraval = styled.TouchableOpacity``;
+
 export const ContainerControlls = styled.View`
   flex-direction: row;
   margin-top: 60px;
@@ -27,7 +33,7 @@ export const ContainerControlls = styled.View`
 export const ContainerCicleAndInterval = styled.View`
   flex-direction: row;
   width: 250px;
-  margin-top: 220px;
+  margin-top: 200px;
   justify-content: space-between;
 `;
 
