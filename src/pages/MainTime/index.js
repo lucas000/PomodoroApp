@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 Icon.loadFont();
@@ -18,6 +18,9 @@ import {
 } from './styles';
 
 const App = () => {
+  const [timeCicle, setTimeCicle] = useState(57);
+  const [timeInterval, setTimeInterval] = useState(5);
+
   const handleStartCicle = useCallback(() => {
     Alert.alert('handleStartCicle', 'handleStartCicle');
   }, []);
@@ -27,19 +30,59 @@ const App = () => {
   }, []);
 
   const handleAddTimeToCicle = useCallback(() => {
-    Alert.alert('handleAddTimeToCicle', 'handleAddTimeToCicle');
+    setTimeCicle((state) => {
+      if (state > 59) {
+        setTimeCicle(state);
+        Alert.alert(
+          'Tempo não permitido',
+          'O tempo de um ciclo deve ser menor que 60 minutos.',
+        );
+      } else {
+        setTimeCicle(state + 1);
+      }
+    });
   }, []);
 
   const handleRemoveTimeToCicle = useCallback(() => {
-    Alert.alert('handleRemoveTimeToCicle', 'handleRemoveTimeToCicle');
+    setTimeCicle((state) => {
+      if (state <= 1) {
+        setTimeCicle(state);
+        Alert.alert(
+          'Tempo não permitido',
+          'O tempo de um ciclo deve ser maior ou igual a 1 minuto.',
+        );
+      } else {
+        setTimeCicle(state - 1);
+      }
+    });
   }, []);
 
   const handleAddTimeToInterval = useCallback(() => {
-    Alert.alert('handleAddTimeToInterval', 'handleAddTimeToInterval');
+    setTimeInterval((state) => {
+      if (state > 59) {
+        setTimeInterval(state);
+        Alert.alert(
+          'Tempo não permitido',
+          'O tempo de um intervalo deve ser menor que 60 minutos.',
+        );
+      } else {
+        setTimeInterval(state + 1);
+      }
+    });
   }, []);
 
   const handleRemoveTimeToInterval = useCallback(() => {
-    Alert.alert('handleRemoveTimeToInterval', 'handleRemoveTimeToInterval');
+    setTimeInterval((state) => {
+      if (state <= 1) {
+        setTimeInterval(state);
+        Alert.alert(
+          'Tempo não permitido',
+          'O tempo de um intervalo deve ser maior ou igual a 1 minuto.',
+        );
+      } else {
+        setTimeInterval(state - 1);
+      }
+    });
   }, []);
 
   return (
@@ -67,7 +110,7 @@ const App = () => {
         <TimeOfCicle onPress={handleAddTimeToCicle}>
           <Icon name="arrow-up" size={30} color="#e8e4e1" />
         </TimeOfCicle>
-        <TextTime>24 min</TextTime>
+        <TextTime>{timeCicle} min</TextTime>
 
         <TimeOfCicle onPress={handleRemoveTimeToCicle}>
           <Icon name="arrow-down" size={30} color="#e8e4e1" />
@@ -76,7 +119,7 @@ const App = () => {
         <TimeOfInteraval onPress={handleAddTimeToInterval}>
           <Icon name="arrow-up" size={30} color="#e8e4e1" />
         </TimeOfInteraval>
-        <TextTime>5 min</TextTime>
+        <TextTime>{timeInterval} min</TextTime>
         <TimeOfInteraval onPress={handleRemoveTimeToInterval}>
           <Icon name="arrow-down" size={30} color="#e8e4e1" />
         </TimeOfInteraval>
