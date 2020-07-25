@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import {Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import CountDown from 'react-native-countdown-component';
 Icon.loadFont();
 
 import {
@@ -21,20 +22,21 @@ import {
 } from './styles';
 
 const App = () => {
-  const [timer, setTimer] = useState(25);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
   const [minutesInSeconds, setMinutesInSeconds] = useState(1500);
+  const [iconStatus, setIconStatus] = useState('play');
   const [timerRunning, setTimerRunning] = useState(false);
   const [timeCicle, setTimeCicle] = useState(25);
   const [timeInterval, setTimeInterval] = useState(5);
+  const [timer, setTimer] = useState(25);
 
   const handleStartCicle = useCallback(() => {
-    Alert.alert('handleStartCicle', 'handleStartCicle');
-  }, []);
+    setTimerRunning(state => !state);
+    timerRunning ? setIconStatus('play') : setIconStatus('pause');
+  }, [timerRunning]);
 
   const handleRestartTimer = useCallback(() => {
-    Alert.alert('handleRestartTimer', 'handleRestartTimer');
+    setTimerRunning(false);
+    setMinutesInSeconds(1500);
   }, []);
 
   const handleAddTimeToCicle = useCallback(() => {
@@ -96,12 +98,23 @@ const App = () => {
   return (
     <Container>
       <ContainerTime>
-        <Time>{minutes}:{seconds}</Time>
+        <CountDown
+          until={minutesInSeconds}
+          running={timerRunning}
+          size={48}
+          showSeparator={true}
+          separatorStyle={{color: '#e8e4e1'}}
+          onFinish={() => Alert.alert('Ciclo concluído...')}
+          digitStyle={{backgroundColor: '#e71414'}}
+          digitTxtStyle={{color: '#e8e4e1'}}
+          timeToShow={['M', 'S']}
+          timeLabels={{m: null, s: null}}
+        />
       </ContainerTime>
 
       <ContainerControlls>
         <PlayButton onPress={handleStartCicle}>
-          <Icon name="play" size={48} color="#e8e4e1" />
+          <Icon name={iconStatus} size={48} color="#e8e4e1" />
         </PlayButton>
 
         <PlayButton onPress={handleRestartTimer}>
