@@ -19,9 +19,15 @@ export const Time = styled.Text`
 
 export const PlayButton = styled.TouchableOpacity``;
 
-export const TimeOfCicle = styled.TouchableOpacity``;
+export const TimeOfCicle = styled.TouchableOpacity`
+  margin-left: 5px;
+  margin-right: 5px;
+`;
 
-export const TimeOfInteraval = styled.TouchableOpacity``;
+export const TimeOfInteraval = styled.TouchableOpacity`
+  margin-left: 5px;
+  margin-right: 5px;
+`;
 
 export const ContainerControlls = styled.View`
   flex-direction: row;
@@ -32,22 +38,31 @@ export const ContainerControlls = styled.View`
 
 export const ContainerCicleAndInterval = styled.View`
   flex-direction: row;
-  width: 250px;
   margin-top: 200px;
-  justify-content: space-between;
+`;
+
+export const ContainerCicle = styled.View`
+  align-items: center;
+  margin-right: 10px;
+`;
+
+export const ContainerControllCicle = styled.View`
+  flex-direction: row;
+`;
+
+export const ContainerInterval = styled.View`
+  align-items: center;
+  margin-left: 10px;
 `;
 
 export const TextInterval = styled.Text`
   font-size: 20px;
+  margin-bottom: 10px;
   color: #e8e4e1;
 `;
 
-export const ContainerMinutes = styled.View`
+export const ContainerControllMinutes = styled.View`
   flex-direction: row;
-  margin-top: 20px;
-  width: 300px;
-  align-items: center;
-  justify-content: space-evenly;
 `;
 
 export const TextTime = styled.Text`
