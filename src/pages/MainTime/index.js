@@ -32,40 +32,47 @@ const App = () => {
   const handleStartCicle = useCallback(() => {
     setTimerRunning(state => !state);
     timerRunning ? setIconStatus('play') : setIconStatus('pause');
-  }, [timerRunning]);
+  }, [timerRunning, iconStatus]);
 
   const handleRestartTimer = useCallback(() => {
     setTimerRunning(false);
-    setMinutesInSeconds(1500);
   }, []);
 
   const handleAddTimeToCicle = useCallback(() => {
-    setTimeCicle((state) => {
-      if (state > 59) {
-        setTimeCicle(state);
-        Alert.alert(
-          'Tempo não permitido',
-          'O tempo de um ciclo deve ser menor que 60 minutos.',
-        );
-      } else {
-        setTimeCicle(state + 1);
-      }
-    });
-  }, []);
+    if (timerRunning) {
+      Alert.alert('Operação bloqueada', 'É possível alterar o tempo apenas quando o crônometro está parado.');
+    } else {
+      setTimeCicle((state) => {
+        if (state > 59) {
+          setTimeCicle(state);
+          Alert.alert(
+            'Tempo não permitido',
+            'O tempo de um ciclo deve ser menor que 60 minutos.',
+          );
+        } else {
+          setTimeCicle(state + 1);
+        }
+      });
+    }
+  }, [timeCicle, timerRunning]);
 
   const handleRemoveTimeToCicle = useCallback(() => {
-    setTimeCicle((state) => {
-      if (state <= 1) {
-        setTimeCicle(state);
-        Alert.alert(
-          'Tempo não permitido',
-          'O tempo de um ciclo deve ser maior ou igual a 1 minuto.',
-        );
-      } else {
-        setTimeCicle(state - 1);
-      }
-    });
-  }, []);
+    if (timerRunning) {
+      Alert.alert('Operação bloqueada', 'É possível alterar o tempo apenas quando o crônometro está parado.');
+    } else {
+      setTimeCicle((state) => {
+        if (state <= 1) {
+          setTimeCicle(state);
+          Alert.alert(
+            'Tempo não permitido',
+            'O tempo de um ciclo deve ser maior ou igual a 1 minuto.',
+          );
+        } else {
+          setTimeCicle(state - 1);
+        }
+      });
+    }
+  }, [timeCicle, timerRunning]);
 
   const handleAddTimeToInterval = useCallback(() => {
     setTimeInterval((state) => {
@@ -99,12 +106,12 @@ const App = () => {
     <Container>
       <ContainerTime>
         <CountDown
-          until={minutesInSeconds}
+          until={timeCicle * 60}
           running={timerRunning}
           size={48}
           showSeparator={true}
           separatorStyle={{color: '#e8e4e1'}}
-          onFinish={() => Alert.alert('Ciclo concluído...')}
+          onFinish={() => Alert.alert('Ciclo concluído...', 'Iniciar intervalo curto.')}
           digitStyle={{backgroundColor: '#e71414'}}
           digitTxtStyle={{color: '#e8e4e1'}}
           timeToShow={['M', 'S']}
