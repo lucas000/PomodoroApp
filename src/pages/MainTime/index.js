@@ -1,13 +1,10 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import CountDown from 'react-native-countdown-component';
-Icon.loadFont();
 
 import {
   Container,
   ContainerTime,
-  Time,
   PlayButton,
   ContainerCicleAndInterval,
   TextInterval,
@@ -20,19 +17,38 @@ import {
   ContainerCicle,
   ContainerInterval,
 } from './styles';
+import Timer from '../../components/Timer';
 
 const App = () => {
-  const [minutesInSeconds, setMinutesInSeconds] = useState(1500);
   const [iconStatus, setIconStatus] = useState('play');
+  const [timerInSeconds, setTimerInSeconds] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
-  const [timeCicle, setTimeCicle] = useState(25);
-  const [timeInterval, setTimeInterval] = useState(5);
-  const [timer, setTimer] = useState(25);
+  const [timeCicle, setTimeCicle] = useState(1);
+  const [timeInterval, setTimeInterval] = useState(1);
+
+  useEffect(() => {
+    let id;
+
+    if (timerRunning) {
+      id = setInterval(() => {
+        if (timerInSeconds !== 0) {
+          setTimerInSeconds((state) => state - 1);
+        } else {
+        }
+      }, 1000);
+    }
+
+    return () => {
+      if (id) {
+        clearInterval(id);
+      }
+    };
+  }, [timeInterval, timerRunning, timerInSeconds]);
 
   const handleStartCicle = useCallback(() => {
-    setTimerRunning(state => !state);
+    setTimerRunning((state) => !state);
     timerRunning ? setIconStatus('play') : setIconStatus('pause');
-  }, [timerRunning, iconStatus]);
+  }, [timerRunning]);
 
   const handleRestartTimer = useCallback(() => {
     setTimerRunning(false);
@@ -40,25 +56,31 @@ const App = () => {
 
   const handleAddTimeToCicle = useCallback(() => {
     if (timerRunning) {
-      Alert.alert('Operação bloqueada', 'É possível alterar o tempo apenas quando o crônometro está parado.');
+      Alert.alert(
+        'Operação bloqueada',
+        'É possível alterar o tempo apenas quando o crônometro está parado.',
+      );
     } else {
       setTimeCicle((state) => {
         if (state > 59) {
           setTimeCicle(state);
           Alert.alert(
             'Tempo não permitido',
-            'O tempo de um ciclo deve ser menor que 60 minutos.',
+            'O tempo de um ciclo deve ser menor ou igual a 60 minutos.',
           );
         } else {
           setTimeCicle(state + 1);
         }
       });
     }
-  }, [timeCicle, timerRunning]);
+  }, [timerRunning]);
 
   const handleRemoveTimeToCicle = useCallback(() => {
     if (timerRunning) {
-      Alert.alert('Operação bloqueada', 'É possível alterar o tempo apenas quando o crônometro está parado.');
+      Alert.alert(
+        'Operação bloqueada',
+        'É possível alterar o tempo apenas quando o crônometro está parado.',
+      );
     } else {
       setTimeCicle((state) => {
         if (state <= 1) {
@@ -72,7 +94,7 @@ const App = () => {
         }
       });
     }
-  }, [timeCicle, timerRunning]);
+  }, [timerRunning]);
 
   const handleAddTimeToInterval = useCallback(() => {
     setTimeInterval((state) => {
@@ -105,17 +127,10 @@ const App = () => {
   return (
     <Container>
       <ContainerTime>
-        <CountDown
-          until={timeCicle * 60}
+        <Timer
+          timeInterval={timeInterval}
           running={timerRunning}
-          size={48}
-          showSeparator={true}
-          separatorStyle={{color: '#e8e4e1'}}
-          onFinish={() => Alert.alert('Ciclo concluído...', 'Iniciar intervalo curto.')}
-          digitStyle={{backgroundColor: '#e71414'}}
-          digitTxtStyle={{color: '#e8e4e1'}}
-          timeToShow={['M', 'S']}
-          timeLabels={{m: null, s: null}}
+          period={timeCicle}
         />
       </ContainerTime>
 
@@ -136,7 +151,7 @@ const App = () => {
             <TimeOfCicle onPress={handleAddTimeToCicle}>
               <Icon name="arrow-up" size={30} color="#e8e4e1" />
             </TimeOfCicle>
-          
+
             <TextTime>{timeCicle} min</TextTime>
 
             <TimeOfCicle onPress={handleRemoveTimeToCicle}>

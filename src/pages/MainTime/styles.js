@@ -9,7 +9,8 @@ export const Container = styled.View`
 `;
 
 export const ContainerTime = styled.View`
-  margin-top: 150px;
+  margin-top: 160px;
+  align-items: center;
 `;
 
 export const Time = styled.Text`
@@ -38,7 +39,7 @@ export const ContainerControlls = styled.View`
 
 export const ContainerCicleAndInterval = styled.View`
   flex-direction: row;
-  margin-top: 200px;
+  margin-top: 50%;
 `;
 
 export const ContainerCicle = styled.View`
