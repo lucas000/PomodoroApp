@@ -1,6 +1,8 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import {AsyncStorage} from 'react-native';
+import SoundPlayer from 'react-native-sound-player';
+
 import {
   Container,
   ContainerTime,
@@ -96,6 +98,12 @@ const App = () => {
     if (!stopedCicle) {
       if (timerInSeconds === 0) {
         setTimerRunning((state) => !state);
+
+        try {
+          SoundPlayer.playSoundFile('sounddefault', 'mp3');
+        } catch (e) {
+          console.log('cannot play the sound file', e);
+        }
         setModalVisible(!isModalVisible);
         setQuantityCicle((state) => state + 1);
         timerRunning ? setIconStatus('play') : setIconStatus('pause');
@@ -200,7 +208,7 @@ const App = () => {
         if (typeTimer === 'interval') {
           setTimerRunning((state) => !state);
           setIconStatus('pause');
-          setTimerInSeconds(25 * 60);
+          setTimerInSeconds(15 * 60);
           setTypeTimer('cicle');
           setQuantityCicle(0);
         } else {
