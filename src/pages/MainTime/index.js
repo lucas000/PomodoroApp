@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useRef, useEffect} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 
 import {
@@ -22,23 +22,23 @@ import ModalTimer from '../../components/ModalTimer';
 import Icon from 'react-native-vector-icons/Feather';
 
 const App = () => {
-  const [timeCicle, setTimeCicle] = useState(2);
-  const [timeInterval, setTimeInterval] = useState(1);
+  const [timeCicle, setTimeCicle] = useState(25);
+  const [timeInterval, setTimeInterval] = useState(5);
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerInSeconds, setTimerInSeconds] = useState(null);
   const [iconStatus, setIconStatus] = useState('play');
   const [isModalVisible, setModalVisible] = useState(false);
   const [stopedCicle, setStopedCicle] = useState(true);
+  const [typeTimer, setTypeTimer] = useState('');
+  const [quantityCicle, setQuantityCicle] = useState(0);
 
   useEffect(() => {
     let id;
 
     if (timerRunning) {
       id = setInterval(() => {
-        console.log('in interval');
         if (timerInSeconds !== 0) {
           setTimerInSeconds((state) => state - 1);
-          console.log('Seconds: ' + timerInSeconds);
           setStopedCicle((state) => !state);
           clearInterval(id);
         }
@@ -57,12 +57,11 @@ const App = () => {
   }, [timeCicle]);
 
   useEffect(() => {
-    console.log('effect');
     if (!stopedCicle) {
       if (timerInSeconds === 0) {
         setTimerRunning((state) => !state);
         setModalVisible(!isModalVisible);
-        console.log('no if');
+        setQuantityCicle((state) => state + 1);
         timerRunning ? setIconStatus('play') : setIconStatus('pause');
       }
     }
@@ -76,6 +75,7 @@ const App = () => {
 
   const handleStartCicle = useCallback(() => {
     setTimerRunning((state) => !state);
+    setTypeTimer('cicle');
     timerRunning ? setIconStatus('play') : setIconStatus('pause');
   }, [timerRunning]);
 
@@ -151,23 +151,39 @@ const App = () => {
 
   const handleOption = useCallback(
     (option) => {
-      console.log('in maintime: ' + option);
       setModalVisible((state) => !state);
 
-      if (option === 'no') {
+      if (quantityCicle === 3) {
+        setTypeTimer('interval');
+      }
+
+      if (option[0] === 'no') {
         setTimerInSeconds(timeCicle * 60);
+        setTypeTimer('cicle');
       } else {
-        setTimerRunning((state) => !state);
-        setIconStatus('pause');
-        setTimerInSeconds(timeInterval * 60);
+        if (typeTimer === 'interval') {
+          setTimerRunning((state) => !state);
+          setIconStatus('pause');
+          setTimerInSeconds(25 * 60);
+          setTypeTimer('cicle');
+          setQuantityCicle(0);
+        } else {
+          setTimerRunning((state) => !state);
+          setIconStatus('pause');
+          setTimerInSeconds(timeInterval * 60);
+        }
       }
     },
-    [timeCicle, timeInterval],
+    [timeCicle, timeInterval, quantityCicle, typeTimer],
   );
 
   return (
     <Container>
-      <ModalTimer isVisible={isModalVisible} onPress={handleOption} />
+      <ModalTimer
+        isVisible={isModalVisible}
+        onPress={handleOption}
+        type={typeTimer}
+      />
       <ContainerTime>
         <Time>
           {Math.floor(timerInSeconds / 60)

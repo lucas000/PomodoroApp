@@ -11,20 +11,23 @@ import {
   ButtonYes,
 } from './styles';
 const ModalTimer = (props) => {
-  const {isVisible} = props;
+  const {isVisible, type} = props;
 
   const callback = useCallback(
     (option) => {
-      props.onPress(option);
+      props.onPress([option, type]);
     },
-    [props],
+    [props, type],
   );
 
   return (
     <ModalContainer isVisible={isVisible} style={{backgroundColor: '#007944'}}>
       <ContainerModal>
         <TextTitle>Está na hora do intervalo</TextTitle>
-        <Texto>Deseja iniciar um intervalo?</Texto>
+        {type === 'cicle' && <Texto>Deseja iniciar um intervalo?</Texto>}
+        {type === 'interval' && (
+          <Texto>Deseja iniciar um intervalo longo?</Texto>
+        )}
 
         <ContainerButtons>
           <ButtonNo onPress={() => callback('no')}>
