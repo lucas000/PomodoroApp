@@ -1,6 +1,6 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
-
+import {AsyncStorage} from 'react-native';
 import {
   Container,
   ContainerTime,
@@ -31,6 +31,42 @@ const App = () => {
   const [stopedCicle, setStopedCicle] = useState(true);
   const [typeTimer, setTypeTimer] = useState('');
   const [quantityCicle, setQuantityCicle] = useState(0);
+
+  useEffect(() => {
+    async function _getData() {
+      try {
+        const cicle = await AsyncStorage.getItem('@PomodoTimer:timeCicle');
+
+        const interval = await AsyncStorage.getItem(
+          '@PomodoTimer:timeInterval',
+        );
+
+        if (cicle !== null && interval !== null) {
+          setTimeCicle(Number(cicle));
+          setTimeInterval(Number(interval));
+        }
+      } catch (error) {}
+    }
+
+    _getData();
+  }, []);
+
+  useEffect(() => {
+    async function _setData() {
+      try {
+        await AsyncStorage.setItem(
+          '@PomodoTimer:timeCicle',
+          JSON.stringify(timeCicle),
+        );
+        await AsyncStorage.setItem(
+          '@PomodoTimer:timeInterval',
+          JSON.stringify(timeInterval),
+        );
+      } catch (error) {}
+    }
+
+    _setData();
+  }, [timeCicle, timeInterval]);
 
   useEffect(() => {
     let id;
