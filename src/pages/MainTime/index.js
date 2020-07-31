@@ -1,39 +1,46 @@
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {Alert} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Container,
   ContainerTime,
-  PlayButton,
   ContainerCicleAndInterval,
   TextInterval,
   ContainerControllMinutes,
   TextTime,
+  Time,
   TimeOfCicle,
   TimeOfInteraval,
   ContainerControlls,
   ContainerControllCicle,
   ContainerCicle,
+  PlayButton,
   ContainerInterval,
 } from './styles';
-import Timer from '../../components/Timer';
+
+import ModalTimer from '../../components/ModalTimer';
+import Icon from 'react-native-vector-icons/Feather';
 
 const App = () => {
-  const [iconStatus, setIconStatus] = useState('play');
-  const [timerInSeconds, setTimerInSeconds] = useState(0);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [timeCicle, setTimeCicle] = useState(1);
+  const [timeCicle, setTimeCicle] = useState(2);
   const [timeInterval, setTimeInterval] = useState(1);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [timerInSeconds, setTimerInSeconds] = useState(null);
+  const [iconStatus, setIconStatus] = useState('play');
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [stopedCicle, setStopedCicle] = useState(true);
 
   useEffect(() => {
     let id;
 
     if (timerRunning) {
       id = setInterval(() => {
+        console.log('in interval');
         if (timerInSeconds !== 0) {
           setTimerInSeconds((state) => state - 1);
-        } else {
+          console.log('Seconds: ' + timerInSeconds);
+          setStopedCicle((state) => !state);
+          clearInterval(id);
         }
       }, 1000);
     }
@@ -43,16 +50,34 @@ const App = () => {
         clearInterval(id);
       }
     };
-  }, [timeInterval, timerRunning, timerInSeconds]);
+  }, [timerRunning, timerInSeconds, isModalVisible]);
+
+  useEffect(() => {
+    setTimerInSeconds(timeCicle * 60);
+  }, [timeCicle]);
+
+  useEffect(() => {
+    console.log('effect');
+    if (!stopedCicle) {
+      if (timerInSeconds === 0) {
+        setTimerRunning((state) => !state);
+        setModalVisible(!isModalVisible);
+        console.log('no if');
+        timerRunning ? setIconStatus('play') : setIconStatus('pause');
+      }
+    }
+  }, [timerInSeconds, isModalVisible, stopedCicle, timerRunning]);
+
+  const handleRestartTimer = useCallback(() => {
+    setTimerRunning(false);
+    setTimerInSeconds(timeCicle * 60);
+    setIconStatus('play');
+  }, [timeCicle]);
 
   const handleStartCicle = useCallback(() => {
     setTimerRunning((state) => !state);
     timerRunning ? setIconStatus('play') : setIconStatus('pause');
   }, [timerRunning]);
-
-  const handleRestartTimer = useCallback(() => {
-    setTimerRunning(false);
-  }, []);
 
   const handleAddTimeToCicle = useCallback(() => {
     if (timerRunning) {
@@ -124,14 +149,33 @@ const App = () => {
     });
   }, []);
 
+  const handleOption = useCallback(
+    (option) => {
+      console.log('in maintime: ' + option);
+      setModalVisible((state) => !state);
+
+      if (option === 'no') {
+        setTimerInSeconds(timeCicle * 60);
+      } else {
+        setTimerRunning((state) => !state);
+        setIconStatus('pause');
+        setTimerInSeconds(timeInterval * 60);
+      }
+    },
+    [timeCicle, timeInterval],
+  );
+
   return (
     <Container>
+      <ModalTimer isVisible={isModalVisible} onPress={handleOption} />
       <ContainerTime>
-        <Timer
-          timeInterval={timeInterval}
-          running={timerRunning}
-          period={timeCicle}
-        />
+        <Time>
+          {Math.floor(timerInSeconds / 60)
+            .toString()
+            .padStart(2, '0') +
+            ':' +
+            (timerInSeconds % 60).toString().padStart(2, '0')}
+        </Time>
       </ContainerTime>
 
       <ContainerControlls>

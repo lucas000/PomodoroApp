@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
 import {Container, TimerText} from './styles';
-import {Alert} from 'react-native';
 
 const Timer = (props) => {
-  let {period, running, timeInterval} = props;
+  let {period, running} = props;
+
   const [timerInSeconds, setTimerInSeconds] = useState(period * 60);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const Timer = (props) => {
         clearInterval(id);
       }
     };
-  }, [period, running, timerInSeconds]);
+  }, [running, timerInSeconds]);
 
   return (
     <Container>
