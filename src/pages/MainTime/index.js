@@ -5,6 +5,8 @@ import SoundPlayer from 'react-native-sound-player';
 
 import {
   Container,
+  Header,
+  MoreOptions,
   ContainerTime,
   ContainerCicleAndInterval,
   TextInterval,
@@ -23,7 +25,11 @@ import {
 import ModalTimer from '../../components/ModalTimer';
 import Icon from 'react-native-vector-icons/Feather';
 
+import {useNavigation} from '@react-navigation/native';
+
 const App = () => {
+  const navigation = useNavigation();
+
   const [timeCicle, setTimeCicle] = useState(25);
   const [timeInterval, setTimeInterval] = useState(5);
   const [timerRunning, setTimerRunning] = useState(false);
@@ -193,6 +199,10 @@ const App = () => {
     });
   }, []);
 
+  function goInfoApp() {
+    navigation.navigate('InfoApp');
+  }
+
   const handleOption = useCallback(
     (option) => {
       setModalVisible((state) => !state);
@@ -223,6 +233,11 @@ const App = () => {
 
   return (
     <Container>
+      <Header>
+        <MoreOptions onPress={goInfoApp}>
+          <Icon name={'info'} size={28} color="#e8e4e1" />
+        </MoreOptions>
+      </Header>
       <ModalTimer
         isVisible={isModalVisible}
         onPress={handleOption}

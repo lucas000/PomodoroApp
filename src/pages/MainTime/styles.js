@@ -8,6 +8,15 @@ export const Container = styled.View`
   background: #e71414;
 `;
 
+export const Header = styled.View`
+  margin-left: auto;
+  margin-top: -5%;
+`;
+
+export const MoreOptions = styled.TouchableOpacity`
+  margin-right: 4%;
+`;
+
 export const ContainerTime = styled.View`
   margin-top: 40%;
   align-items: center;
