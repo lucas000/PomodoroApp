@@ -2,6 +2,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import {Alert} from 'react-native';
 import {AsyncStorage} from 'react-native';
 import SoundPlayer from 'react-native-sound-player';
+import BackgroundTimer from 'react-native-background-timer';
 
 import {
   Container,
@@ -80,7 +81,7 @@ const App = () => {
     let id;
 
     if (timerRunning) {
-      id = setInterval(() => {
+      id = BackgroundTimer.setInterval(() => {
         if (timerInSeconds !== 0) {
           setTimerInSeconds((state) => state - 1);
           setStopedCicle((state) => !state);
@@ -91,7 +92,7 @@ const App = () => {
 
     return () => {
       if (id) {
-        clearInterval(id);
+        BackgroundTimer.clearInterval(id);
       }
     };
   }, [timerRunning, timerInSeconds, isModalVisible]);
@@ -132,7 +133,7 @@ const App = () => {
   const handleAddTimeToCicle = useCallback(() => {
     if (timerRunning) {
       Alert.alert(
-        'Operação bloqueada',
+        'Alteração indisponível',
         'É possível alterar o tempo apenas quando o crônometro está parado.',
       );
     } else {
@@ -153,7 +154,7 @@ const App = () => {
   const handleRemoveTimeToCicle = useCallback(() => {
     if (timerRunning) {
       Alert.alert(
-        'Operação bloqueada',
+        'Alteração indisponível',
         'É possível alterar o tempo apenas quando o crônometro está parado.',
       );
     } else {
@@ -172,32 +173,46 @@ const App = () => {
   }, [timerRunning]);
 
   const handleAddTimeToInterval = useCallback(() => {
-    setTimeInterval((state) => {
-      if (state > 59) {
-        setTimeInterval(state);
-        Alert.alert(
-          'Tempo não permitido',
-          'O tempo de um intervalo deve ser menor que 60 minutos.',
-        );
-      } else {
-        setTimeInterval(state + 1);
-      }
-    });
-  }, []);
+    if (timerRunning) {
+      Alert.alert(
+        'Alteração indisponível',
+        'É possível alterar o tempo apenas quando o crônometro está parado.',
+      );
+    } else {
+      setTimeInterval((state) => {
+        if (state > 59) {
+          setTimeInterval(state);
+          Alert.alert(
+            'Tempo não permitido',
+            'O tempo de um intervalo deve ser menor que 60 minutos.',
+          );
+        } else {
+          setTimeInterval(state + 1);
+        }
+      });
+    }
+  }, [timerRunning]);
 
   const handleRemoveTimeToInterval = useCallback(() => {
-    setTimeInterval((state) => {
-      if (state <= 1) {
-        setTimeInterval(state);
-        Alert.alert(
-          'Tempo não permitido',
-          'O tempo de um intervalo deve ser maior ou igual a 1 minuto.',
-        );
-      } else {
-        setTimeInterval(state - 1);
-      }
-    });
-  }, []);
+    if (timerRunning) {
+      Alert.alert(
+        'Alteração indisponível',
+        'É possível alterar o tempo apenas quando o crônometro está parado.',
+      );
+    } else {
+      setTimeInterval((state) => {
+        if (state <= 1) {
+          setTimeInterval(state);
+          Alert.alert(
+            'Tempo não permitido',
+            'O tempo de um intervalo deve ser maior ou igual a 1 minuto.',
+          );
+        } else {
+          setTimeInterval(state - 1);
+        }
+      });
+    }
+  }, [timerRunning]);
 
   function goInfoApp() {
     navigation.navigate('InfoApp');
