@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import Feather from 'react-native-vector-icons/Feather';
 
 export const Container = styled.View`
   flex: 1;
@@ -13,9 +14,15 @@ export const Header = styled.View`
   margin-top: -5%;
 `;
 
-export const MoreOptions = styled.TouchableOpacity`
-  margin-right: 4%;
+export const MoreOptions = styled.View`
+  align-self: flex-end;
+  margin-top: -30px;
+  margin-right: 20px;
 `;
+
+export const InfoButton = styled.TouchableOpacity``;
+
+export const InfoIcon = styled(Feather)``;
 
 export const ContainerTime = styled.View`
   margin-top: 40%;

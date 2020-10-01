@@ -4,7 +4,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import MainTime from './pages/MainTime';
-import InfoApp from './pages/InfoApp';
 
 const AppStack = createStackNavigator();
 
@@ -18,9 +17,8 @@ const Routes = () => {
             backgroundColor: '#f0f0f5',
           },
         }}>
-        <AppStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
         <AppStack.Screen name="MainTime" component={MainTime} />
-        <AppStack.Screen name="InfoApp" component={InfoApp} />
+        <AppStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

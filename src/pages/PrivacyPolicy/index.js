@@ -16,8 +16,6 @@ import {useNavigation} from '@react-navigation/native';
 import {Alert, AsyncStorage} from 'react-native';
 
 const PrivacyPolicy = () => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -26,8 +24,6 @@ const PrivacyPolicy = () => {
         const firstLaunch = await AsyncStorage.getItem(
           '@PomodoTimer:wasLaunch',
         );
-
-        console.log('First launch now: ' + firstLaunch);
 
         if (firstLaunch !== null) {
           navigation.navigate('MainTime');
@@ -39,25 +35,7 @@ const PrivacyPolicy = () => {
   }, [navigation]);
 
   function handleGoMainPage() {
-    if (toggleCheckBox) {
-      async function _setData() {
-        try {
-          await AsyncStorage.setItem(
-            '@PomodoTimer:wasLaunch',
-            JSON.stringify('yes'),
-          );
-        } catch (error) {}
-      }
-
-      _setData();
-
-      navigation.navigate('MainTime');
-    } else {
-      Alert.alert(
-        'Atenção',
-        'Para usar o aplicativo você deve aceitar os termos e política de uso do aplicativo',
-      );
-    }
+    navigation.navigate('MainTime');
   }
 
   return (
@@ -71,22 +49,9 @@ const PrivacyPolicy = () => {
         aplicativo foi desenvolvido apenas para fim didáticos.
       </TextPrivacyPolicy>
 
-      <ContainerAgreeTerms>
-        <ContainerUseTerms>
-          <CheckBox
-            disabled={false}
-            value={toggleCheckBox}
-            onValueChange={(newValue) => setToggleCheckBox(newValue)}
-          />
-          <TextAcceptTerms>
-            Li e concordo com os termos e políticas de uso do aplicativo.
-          </TextAcceptTerms>
-        </ContainerUseTerms>
-
-        <ButtonConfirme onPress={handleGoMainPage}>
-          <TextButtonConfirme>Confirmar</TextButtonConfirme>
-        </ButtonConfirme>
-      </ContainerAgreeTerms>
+      <ButtonConfirme onPress={handleGoMainPage}>
+        <TextButtonConfirme>Confirmar</TextButtonConfirme>
+      </ButtonConfirme>
     </Container>
   );
 };

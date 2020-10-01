@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useEffect} from 'react';
-import {Alert} from 'react-native';
+import {Alert, Text} from 'react-native';
 import {AsyncStorage} from 'react-native';
 import SoundPlayer from 'react-native-sound-player';
 import BackgroundTimer from 'react-native-background-timer';
@@ -12,6 +12,9 @@ import {
   ContainerControllMinutes,
   TextTime,
   Time,
+  MoreOptions,
+  InfoButton,
+  InfoIcon,
   TimeOfCicle,
   TimeOfInteraval,
   ContainerControlls,
@@ -23,6 +26,7 @@ import {
 
 import ModalTimer from '../../components/ModalTimer';
 import Icon from 'react-native-vector-icons/Feather';
+import {useNavigation} from '@react-navigation/native';
 
 const MainTime = () => {
   const [timeCicle, setTimeCicle] = useState(25);
@@ -34,6 +38,8 @@ const MainTime = () => {
   const [stopedCicle, setStopedCicle] = useState(true);
   const [typeTimer, setTypeTimer] = useState('cicle');
   const [quantityCicle, setQuantityCicle] = useState(0);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     async function _getData() {
@@ -261,6 +267,10 @@ const MainTime = () => {
     [timeCicle, timeInterval, typeTimer],
   );
 
+  function handleGoPageInfo() {
+    navigation.navigate('PrivacyPolicy');
+  }
+
   return (
     <Container>
       <ModalTimer
@@ -268,6 +278,12 @@ const MainTime = () => {
         onPress={handleOption}
         type={typeTimer}
       />
+
+      <MoreOptions>
+        <InfoButton onPress={handleGoPageInfo}>
+          <InfoIcon size={28} name="more-vertical" style={{color: '#fff'}} />
+        </InfoButton>
+      </MoreOptions>
       <ContainerTime>
         <Time>
           {Math.floor(timerInSeconds / 60)
