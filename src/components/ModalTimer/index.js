@@ -23,11 +23,14 @@ const ModalTimer = (props) => {
   return (
     <ModalContainer isVisible={isVisible} style={{backgroundColor: '#007944'}}>
       <ContainerModal>
-        <TextTitle>Está na hora do intervalo</TextTitle>
+        <TextTitle />
+        {type === 'cicle' && <TextTitle>Está na hora do intervalo</TextTitle>}
+        {type === 'interval' && <TextTitle>Intervalo finalizado</TextTitle>}
+        {type === 'pause' && <TextTitle>Pomodoro finalizado</TextTitle>}
+
         {type === 'cicle' && <Texto>Deseja iniciar um intervalo?</Texto>}
-        {type === 'interval' && (
-          <Texto>Deseja iniciar um intervalo longo?</Texto>
-        )}
+        {type === 'interval' && <Texto>Deseja iniciar um ciclo?</Texto>}
+        {type === 'pause' && <Texto>Deseja iniciar um intervalo longo?</Texto>}
 
         <ContainerButtons>
           <ButtonNo onPress={() => callback('no')}>

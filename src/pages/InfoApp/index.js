@@ -3,7 +3,7 @@ import React from 'react';
 import {TouchableHighlight, Alert} from 'react-native';
 import {Container, AboutPomodoro, ByWho, Definition, UseTerms} from './styles';
 
-const App = () => {
+const InfoApp = () => {
   return (
     <Container>
       <AboutPomodoro>Sobre o Pomodoro Timer</AboutPomodoro>
@@ -28,4 +28,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default InfoApp;

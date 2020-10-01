@@ -6,8 +6,6 @@ import BackgroundTimer from 'react-native-background-timer';
 
 import {
   Container,
-  Header,
-  MoreOptions,
   ContainerTime,
   ContainerCicleAndInterval,
   TextInterval,
@@ -26,11 +24,7 @@ import {
 import ModalTimer from '../../components/ModalTimer';
 import Icon from 'react-native-vector-icons/Feather';
 
-import {useNavigation} from '@react-navigation/native';
-
-const App = () => {
-  const navigation = useNavigation();
-
+const MainTime = () => {
   const [timeCicle, setTimeCicle] = useState(25);
   const [timeInterval, setTimeInterval] = useState(5);
   const [timerRunning, setTimerRunning] = useState(false);
@@ -38,21 +32,24 @@ const App = () => {
   const [iconStatus, setIconStatus] = useState('play');
   const [isModalVisible, setModalVisible] = useState(false);
   const [stopedCicle, setStopedCicle] = useState(true);
-  const [typeTimer, setTypeTimer] = useState('');
+  const [typeTimer, setTypeTimer] = useState('cicle');
   const [quantityCicle, setQuantityCicle] = useState(0);
 
   useEffect(() => {
     async function _getData() {
       try {
         const cicle = await AsyncStorage.getItem('@PomodoTimer:timeCicle');
-
         const interval = await AsyncStorage.getItem(
           '@PomodoTimer:timeInterval',
         );
+        const ciclesQuantity = await AsyncStorage.getItem(
+          '@PomodoTimer:ciclesQuantity',
+        );
 
-        if (cicle !== null && interval !== null) {
+        if (cicle !== null && interval !== null && ciclesQuantity !== null) {
           setTimeCicle(Number(cicle));
           setTimeInterval(Number(interval));
+          setQuantityCicle(Number(ciclesQuantity));
         }
       } catch (error) {}
     }
@@ -71,11 +68,16 @@ const App = () => {
           '@PomodoTimer:timeInterval',
           JSON.stringify(timeInterval),
         );
+
+        await AsyncStorage.setItem(
+          '@PomodoTimer:ciclesQuantity',
+          JSON.stringify(quantityCicle),
+        );
       } catch (error) {}
     }
 
     _setData();
-  }, [timeCicle, timeInterval]);
+  }, [timeCicle, timeInterval, quantityCicle]);
 
   useEffect(() => {
     let id;
@@ -109,14 +111,27 @@ const App = () => {
         try {
           SoundPlayer.playSoundFile('sounddefault', 'mp3');
         } catch (e) {
-          console.log('cannot play the sound file', e);
+          Alert.alert(
+            'Erro ao tocar o sino',
+            'Estamos com problema pare tocar o sino, por favor, nos-dê um feedback :)',
+          );
         }
+
         setModalVisible(!isModalVisible);
-        setQuantityCicle((state) => state + 1);
+
+        if (typeTimer === 'cicle') {
+          setQuantityCicle((state) => state + 1);
+        }
         timerRunning ? setIconStatus('play') : setIconStatus('pause');
       }
     }
-  }, [timerInSeconds, isModalVisible, stopedCicle, timerRunning]);
+  }, [timerInSeconds, isModalVisible, stopedCicle, timerRunning, typeTimer]);
+
+  useEffect(() => {
+    if (quantityCicle === 3) {
+      setTypeTimer('pause');
+    }
+  }, [quantityCicle]);
 
   const handleRestartTimer = useCallback(() => {
     setTimerRunning(false);
@@ -214,45 +229,40 @@ const App = () => {
     }
   }, [timerRunning]);
 
-  function goInfoApp() {
-    navigation.navigate('InfoApp');
-  }
-
   const handleOption = useCallback(
     (option) => {
       setModalVisible((state) => !state);
-
-      if (quantityCicle === 3) {
-        setTypeTimer('interval');
-      }
 
       if (option[0] === 'no') {
         setTimerInSeconds(timeCicle * 60);
         setTypeTimer('cicle');
       } else {
+        if (typeTimer === 'cicle') {
+          setTimerRunning((state) => !state);
+          setIconStatus('pause');
+          setTypeTimer('interval');
+          setTimerInSeconds(timeInterval * 60);
+        }
         if (typeTimer === 'interval') {
           setTimerRunning((state) => !state);
           setIconStatus('pause');
-          setTimerInSeconds(15 * 60);
+          setTimerInSeconds(timeCicle * 60);
           setTypeTimer('cicle');
-          setQuantityCicle(0);
-        } else {
+        }
+        if (typeTimer === 'pause') {
           setTimerRunning((state) => !state);
           setIconStatus('pause');
-          setTimerInSeconds(timeInterval * 60);
+          setTimerInSeconds(15 * 60);
+          setTypeTimer('interval');
+          setQuantityCicle(0);
         }
       }
     },
-    [timeCicle, timeInterval, quantityCicle, typeTimer],
+    [timeCicle, timeInterval, typeTimer],
   );
 
   return (
     <Container>
-      <Header>
-        <MoreOptions onPress={goInfoApp}>
-          <Icon name={'info'} size={28} color="#e8e4e1" />
-        </MoreOptions>
-      </Header>
       <ModalTimer
         isVisible={isModalVisible}
         onPress={handleOption}
@@ -312,4 +322,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default MainTime;
